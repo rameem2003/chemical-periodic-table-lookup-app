@@ -213,7 +213,7 @@ void startApp()
     char atomicSymbol[3];
     printf("\033[1;32m####################################################\033[0m\n");
     printf("\033[1;32m#######  Chemical Periodic Table Lookup App ########\033[0m\n");
-    printf("\033[1;32m########### Software Version 0.1 Alpha #############\033[0m\n");
+    printf("\033[1;32m########### Software Version 1.0 Stable ############\033[0m\n");
     printf("\033[1;32m############# Software written in C ################\033[0m\n");
     printf("\033[1;32m####################################################\033[0m\n\n\n");
 
