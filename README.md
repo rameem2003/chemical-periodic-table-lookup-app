@@ -1,48 +1,33 @@
 # Chemical Periodic Table Lookup App
 
-**Software Version:** 1.0 Stable  
-**Programming Language:** C
-
 ## Overview
 
-The **Chemical Periodic Table Lookup App** is a console-based application designed to provide detailed information about chemical elements based on either their atomic number or atomic symbol. The application includes the following features:
-
-- Fast lookup of chemical element details.
-- A comprehensive database of 118 chemical elements.
-- Clean console output with formatting for better readability.
-- Simulation of loading time for an enhanced user experience.
+The **Chemical Periodic Table Lookup App** is a software application written in C that allows users to search and retrieve information about chemical elements using either their atomic number or atomic symbol. The application provides a simple and efficient way to look up detailed information about elements in the periodic table.
 
 ---
 
 ## Features
 
-### 1. Lookup by Atomic Number
-
-Users can input the atomic number of a chemical element, and the application will display:
-
-- Element name
-- Atomic symbol
-- Atomic number
-- Atomic mass
-- Electronic configuration
-
-### 2. Lookup by Atomic Symbol
-
-Users can input the atomic symbol of a chemical element, and the application will retrieve and display the same detailed information.
+- Cross-platform compatibility (Windows and Linux/Unix).
+- Search elements by:
+  - Atomic Number.
+  - Atomic Symbol.
+- Detailed information for each element, including:
+  - Atomic Number.
+  - Atomic Symbol.
+  - Atom Name.
+  - Atomic Mass.
+  - Electronic Configuration.
+- Enhanced console output with formatted and colorized text.
+- Simulated loading time for better user experience.
 
 ---
 
 ## Data Structure
 
-The app uses a `struct` called `Element` to store information about each chemical element. The structure contains:
+The application uses a structured array of type `struct Element` to store information about the 118 known elements of the periodic table.
 
-- **`atomicNumber`** (int): Atomic number of the element.
-- **`atomicSymbol`** (char[50]): Atomic symbol of the element.
-- **`atomName`** (char[20]): Full name of the element.
-- **`atomicMass`** (double): Atomic mass of the element.
-- **`electronic_configuration`** (char[50]): Electronic configuration of the element.
-
-Example:
+### Element Structure
 
 ```c
 struct Element {
@@ -56,100 +41,130 @@ struct Element {
 
 ---
 
-## Usage
+## Cross-Platform Sleep Function
 
-### Main Menu
+To ensure compatibility across operating systems, a `cross_platform_sleep` function is implemented. It uses the appropriate system call based on the operating system:
 
-Upon starting the application, users are presented with the following options:
+### Implementation
 
-1. Search by atomic number.
-2. Search by atomic symbol.
-3. Exit the program.
-
-### Input Validation
-
-- The app checks if the provided atomic number or atomic symbol exists in the database.
-- If not found, an error message is displayed.
-
-### Example Output
-
-For an atomic number search:
-
-```text
-############################################################
-## Atom Name: Oxygen
-## Atomic Symbol: O
-## Atomic Number: 8
-## Atomic Mass: 15.999000
-## Electronic Configuration: 1s2 2s2 2p4
-############################################################
+```c
+void cross_platform_sleep(int milliseconds) {
+    #ifdef _WIN32
+        Sleep(milliseconds); // Windows-specific sleep
+    #else
+        struct timespec ts;
+        ts.tv_sec = milliseconds / 1000;
+        ts.tv_nsec = (milliseconds % 1000) * 1000000L;
+        nanosleep(&ts, NULL); // Linux/Unix-specific sleep
+    #endif
+}
 ```
 
 ---
 
 ## Functions
 
-### 1. `displayAtoms`
+### 1. Display Element Information
 
-Displays the details of a specific element in a formatted manner.
-
-#### Parameters
-
-- `element` (struct Element): The element to display.
-
-#### Example
+Displays detailed information about a specific element.
 
 ```c
-void displayAtoms(struct Element element) {
-    printf("Atom Name: %s\n", element.atomName);
-    // Additional output lines
-}
+void displayAtoms(struct Element element);
 ```
 
-### 2. `displayAtomBySearchingAtomicNumber`
+#### Example Output:
 
-Searches for an element using its atomic number.
+```
+Searching.........
 
-#### Parameters
+############################################################
+## Atom Name: Hydrogen
+## Atomic Symbol: H
+## Atomic Number: 1
+## Atomic Mass: 1.008
+## Electronic Configuration: 1s1
+############################################################
+```
 
-- `userAtomicNumber` (int): The atomic number entered by the user.
-- `elements` (struct Element[]): The database of elements.
+### 2. Search by Atomic Number
 
-### 3. `displayAtomBySearchingAtomicSymbol`
+Allows users to search for an element by entering its atomic number.
 
-Searches for an element using its atomic symbol.
+```c
+void displayAtomBySearchingAtomicNumber(int userAtomicNumber, struct Element elements[]);
+```
 
-#### Parameters
+### 3. Search by Atomic Symbol
 
-- `userAtomicSymbol` (char[]): The atomic symbol entered by the user.
-- `elements` (struct Element[]): The database of elements.
+Allows users to search for an element by entering its atomic symbol.
 
-### 4. `startApp`
+```c
+void displayAtomBySearchingAtomicSymbol(char userAtomicSymbol[], struct Element elements[]);
+```
 
-Displays the main menu and handles user input.
+---
+
+## Example Usage
+
+### Searching by Atomic Number:
+
+```c
+int userAtomicNumber = 1;
+displayAtomBySearchingAtomicNumber(userAtomicNumber, elements);
+```
+
+### Searching by Atomic Symbol:
+
+```c
+char userAtomicSymbol[] = "H";
+displayAtomBySearchingAtomicSymbol(userAtomicSymbol, elements);
+```
+
+---
+
+## Console Output Formatting
+
+The application uses ANSI escape codes for enhanced text formatting and colorization on the console. For example:
+
+- **Green Text:** Indicating a search process.
+- **Yellow Text:** Displaying results.
+- **Red Text:** Indicating an error or element not found.
+
+### Example Code:
+
+```c
+printf("\033[1;32mSearching......... \033[0m\n\n");
+printf("\033[1;33m## Atom Name: %s \033[0m\n", element.atomName);
+```
 
 ---
 
 ## Dependencies
 
-- **Standard Input/Output Library** (`<stdio.h>`): Used for console input and output.
-- **String Library** (`<string.h>`): Used for string comparison.
-- **Windows.h**: Used for simulating delays with `Sleep` function.
+- **Windows:** Requires `<windows.h>` for `Sleep()`.
+- **Linux/Unix:** Requires `<unistd.h>` and `<time.h>` for `usleep()` or `nanosleep()`.
 
 ---
 
-## Limitations
+## Future Enhancements
 
-- Currently supports only English for console output.
-- Not designed for multi-platform compatibility (uses `windows.h` for `Sleep`, which may not work on non-Windows systems).
-
----
-
-## Future Improvements
-
-- Add support for other platforms (replace `Sleep` with a cross-platform alternative).
-- Include more user-friendly error messages.
-- Allow searching by partial atomic symbol or name.
 - Add a graphical user interface (GUI).
+- Include advanced search features, such as:
+  - Search by atomic mass range.
+  - Search by electronic configuration.
+- Provide educational resources or links for each element.
+
+---
+
+## Acknowledgments
+
+- Periodic table data retrieved from reliable scientific sources.
+- Implementation inspired by modern C programming practices.
+
+---
+
+## Author
+
+**Mahmood Hassan Rameem**
 
 ---
